@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TextBase,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Notification,
@@ -16,7 +17,10 @@ import {
   Message,
   SearchNormal,
 } from 'iconsax-react-native';
-import {fontType, colors} from './src/theme';
+import {fontType, colors,img} from './src/theme';
+import FastImage from 'react-native-fast-image';
+import {Tantangan, Olahraga} from './src/components';
+import {TantanganList, OlahragaList} from './project/data';
 
 export default function App() {
   return (
@@ -56,104 +60,13 @@ export default function App() {
 }
 
 const ListTantangan = () => {
+
+  const horizontalData = TantanganList;
   return (
     <View>
-      <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-        <View style={{...itemhorizontal.carditem, marginLeft: 16}}>
-          <ImageBackground
-            resizeMode="cover"
-            style={itemhorizontal.cardImage}
-            borderRadius={10}
-            // style ={{width: 140, height: 167, borderRadius: 20, marginHorizontal: 20, overflow: 'hidden'}}
-            source={require('./src/assets/img/lari.jpg')}>
-            <View style={itemhorizontal.cardcontent}>
-              <View style={itemhorizontal.cardInfo}>
-                <Text style={itemhorizontal.cardtitle}>1 Jam</Text>
-                <Text style={itemhorizontal.cardtext}>Oct 10, 2023</Text>
-              </View>
-              <View>
-                <View style={itemhorizontal.cardIcon}>
-                  <Receipt21
-                    color={colors.black()}
-                    variant="Linear"
-                    size={20}
-                  />
-                </View>
-              </View>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={{...itemhorizontal.carditem, marginLeft: 16}}>
-          <ImageBackground
-            resizeMode="cover"
-            style={itemhorizontal.cardImage}
-            borderRadius={10}
-            // style ={{width: 140, height: 167, borderRadius: 20, marginHorizontal: 20, overflow: 'hidden'}}
-            source={require('./src/assets/img/pull.jpg')}>
-            <View style={itemhorizontal.cardcontent}>
-              <View style={itemhorizontal.cardInfo}>
-                <Text style={itemhorizontal.cardtitle}>30 Menit</Text>
-                <Text style={itemhorizontal.cardtext}>Oct 10, 2023</Text>
-              </View>
-              <View>
-                <View style={itemhorizontal.cardIcon}>
-                  <Receipt21
-                    color={colors.black()}
-                    variant="Linear"
-                    size={20}
-                  />
-                </View>
-              </View>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={{...itemhorizontal.carditem, marginLeft: 16}}>
-          <ImageBackground
-            resizeMode="cover"
-            style={itemhorizontal.cardImage}
-            borderRadius={10}
-            // style ={{width: 140, height: 167, borderRadius: 20, marginHorizontal: 20, overflow: 'hidden'}}
-            source={require('./src/assets/img/satu.jpg')}>
-            <View style={itemhorizontal.cardcontent}>
-              <View style={itemhorizontal.cardInfo}>
-                <Text style={itemhorizontal.cardtitle}>15 menit</Text>
-                <Text style={itemhorizontal.cardtext}>Oct 10, 2023</Text>
-              </View>
-              <View>
-                <View style={itemhorizontal.cardIcon}>
-                  <Receipt21
-                    color={colors.black()}
-                    variant="Linear"
-                    size={20}
-                  />
-                </View>
-              </View>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={{...itemhorizontal.carditem, marginLeft: 16}}>
-          <ImageBackground
-            resizeMode="cover"
-            style={itemhorizontal.cardImage}
-            borderRadius={10}
-            // style ={{width: 140, height: 167, borderRadius: 20, marginHorizontal: 20, overflow: 'hidden'}}
-            source={require('./src/assets/img/gym.jpg')}>
-            <View style={itemhorizontal.cardcontent}>
-              <View style={itemhorizontal.cardInfo}>
-                <Text style={itemhorizontal.cardtitle}>10 menit</Text>
-                <Text style={itemhorizontal.cardtext}>Oct 10, 2023</Text>
-              </View>
-              <View>
-                <View style={itemhorizontal.cardIcon}>
-                  <Receipt21
-                    color={colors.black()}
-                    variant="Linear"
-                    size={20}
-                  />
-                </View>
-              </View>
-            </View>
-          </ImageBackground>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.itemtantangan}>
+          <Tantangan data={horizontalData} />
         </View>
       </ScrollView>
     </View>
@@ -172,11 +85,11 @@ const ListOlahraga = () => {
             <View style={itemolaraga.cardInfo}>
               <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
             </View>
-            <View>
-              <View style={itemhorizontal.cardIcon}>
+            {/* <View>
+              <View style={itemolaraga.cardIcon}>
                 <Receipt21 color={colors.white()} variant="Linear" size={30} />
               </View>
-            </View>
+            </View> */}
           </View>
         </ImageBackground>
       </View>
@@ -187,13 +100,13 @@ const ListOlahraga = () => {
           source={require('./src/assets/img/dada.jpg')}>
           <View style={itemolaraga.cardcontent}>
             <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
+              <Text style={itemolaraga.cardtitle}>Latihan Otot dada</Text>
             </View>
-            <View>
-              <View style={itemhorizontal.cardIcon}>
+            {/* <View>
+              <View style={itemolaraga.cardIcon}>
                 <Receipt21 color={colors.white()} variant="Linear" size={30} />
               </View>
-            </View>
+            </View> */}
           </View>
         </ImageBackground>
       </View>
@@ -204,13 +117,13 @@ const ListOlahraga = () => {
           source={require('./src/assets/img/lengan.jpg')}>
           <View style={itemolaraga.cardcontent}>
             <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
+              <Text style={itemolaraga.cardtitle}>Latihan Otot lengan</Text>
             </View>
-            <View>
-              <View style={itemhorizontal.cardIcon}>
+            {/* <View>
+              <View style={itemolaraga.cardIcon}>
                 <Receipt21 color={colors.white()} variant="Linear" size={30} />
               </View>
-            </View>
+            </View> */}
           </View>
         </ImageBackground>
       </View>
@@ -221,13 +134,15 @@ const ListOlahraga = () => {
           source={require('./src/assets/img/bahudanpunggung.jpg')}>
           <View style={itemolaraga.cardcontent}>
             <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
+              <Text style={itemolaraga.cardtitle}>
+                Latihan Otot bahu & penggung
+              </Text>
             </View>
-            <View>
-              <View style={itemhorizontal.cardIcon}>
+            {/* <View>
+              <View style={itemolaraga.cardIcon}>
                 <Receipt21 color={colors.white()} variant="Linear" size={30} />
               </View>
-            </View>
+            </View> */}
           </View>
         </ImageBackground>
       </View>
@@ -266,37 +181,51 @@ const itemolaraga = StyleSheet.create({
     fontFamily: fontType['Poppins-bold'],
     color: colors.white(),
   },
+  cardIcon: {
+    backgroundColor: colors.white(0.33),
+    padding: 5,
+    borderColor: colors.white(),
+    borderWidth: 0.5,
+    borderRadius: 5,
+  },
 });
 
-const itemhorizontal = StyleSheet.create({
-  carditem: {
-    width: 140,
-  },
-  cardImage: {
-    width: '100%',
-    height: 167,
-  },
-  cardcontent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-  },
-  cardInfo: {
-    justifyContent: 'flex-end',
-    height: '100%',
-    maxWidth: '70%',
-  },
-  cardtitle: {
-    fontSize: 14,
-    fontFamily: fontType['Poppins-bold'],
-    color: colors.white(),
-  },
-  cardtext: {
-    fontSize: 8,
-    fontFamily: fontType['Poppins-regular'],
-    color: colors.white(),
-  },
-});
+// const itemhorizontal = StyleSheet.create({
+//   carditem: {
+//     width: 140,
+//   },
+//   cardImage: {
+//     width: '100%',
+//     height: 167,
+//   },
+//   cardcontent: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     padding: 10,
+//   },
+//   cardInfo: {
+//     justifyContent: 'flex-end',
+//     height: '100%',
+//     maxWidth: '70%',
+//   },
+//   cardtitle: {
+//     fontSize: 14,
+//     fontFamily: fontType['Poppins-bold'],
+//     color: colors.white(),
+//   },
+//   cardtext: {
+//     fontSize: 8,
+//     fontFamily: fontType['Poppins-regular'],
+//     color: colors.white(),
+//   },
+//   cardIcon: {
+//     backgroundColor: colors.white(0.33),
+//     padding: 5,
+//     borderColor: colors.white(),
+//     borderWidth: 0.5,
+//     borderRadius: 5,
+//   },
+// });
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -347,9 +276,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E3F6FF',
     opacity: 0.5,
-    marginHorizontal:20,
+    marginHorizontal: 20,
     paddingHorizontal: 10,
     borderRadius: 10,
     marginTop: 20,
+  },
+  itemtantangan: {
+    paddingVertical: 10,
+    gap: 10,
+  },
+  listCard: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    gap: 15,
   },
 });
