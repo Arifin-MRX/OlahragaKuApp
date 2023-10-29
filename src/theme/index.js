@@ -1,4 +1,5 @@
 import colors from "./colors";
 import fontType from "./fonts";
 import img from "./img";
-export {colors, fontType, img} 
+import latihan from "./latihan";
+export {colors, fontType, img, latihan} 

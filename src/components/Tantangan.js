@@ -1,22 +1,14 @@
 import React, {useState} from 'react';
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
-  Image,
   ImageBackground,
-  TextBase,
-  TextInput,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
 import {
-  Notification,
   Receipt21,
-  Clock,
-  Message,
-  SearchNormal,
 } from 'iconsax-react-native';
 import {fontType, colors} from '../theme';
 import FastImage from 'react-native-fast-image';
