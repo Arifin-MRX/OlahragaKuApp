@@ -8,12 +8,29 @@ import {
   ScrollView,
   TouchableOpacity,
   ImageBackground,
-  Alert
+  Alert,
 } from 'react-native';
 import {colors, fontType} from '../../theme';
-import {ototperut} from '../../theme/img';
+import {
+  bahudanpunggung,
+  dada,
+  lari,
+  lengan,
+  ototperut,
+  pull,
+  satu,
+  fotoprofil,
+  man,
+  buppes,
+  mat,
+  streching,
+  exercises,
+  using,
+} from '../../theme/img';
 import {ArrowLeft} from 'iconsax-react-native';
-import ItemOtotPerut from '../../components/ItemOtotPerut';
+import {ItemOtotPerut, ItemOtotDada, ItemOtotBahudanPunggung, ItemOtotLengan} from '../../components/ItemLatihan';
+import {useNavigation} from '@react-navigation/native';
+
 const Latihan = item => {
   return (
     <View style={{marginHorizontal: 20, marginTop: 10}}>
@@ -38,7 +55,9 @@ const Latihan = item => {
     </View>
   );
 };
+
 const ItemLatihanOtotPerut = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.Container}>
       <StatusBar
@@ -48,16 +67,14 @@ const ItemLatihanOtotPerut = () => {
       />
       <ImageBackground source={ototperut} style={{height: 250, width: '100%'}}>
         <View style={styles.header}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowLeft color={colors.white()} variant="Linear" size={25} />
           </TouchableOpacity>
-          <Text style={styles.title}>Oto Perut</Text>
+          <Text style={styles.title}>Otot Dada</Text>
         </View>
       </ImageBackground>
       <View style={styles.boxlist}>
-        <TouchableOpacity
-          style={styles.button}
-        >
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Mulai</Text>
         </TouchableOpacity>
         <ScrollView>
@@ -67,7 +84,93 @@ const ItemLatihanOtotPerut = () => {
     </View>
   );
 };
-export {Latihan, ItemLatihanOtotPerut};
+
+const ItemLatihanOtotDada = () => {
+  const navigation = useNavigation();
+  return (
+    <View style={styles.Container}>
+      <StatusBar
+        barStyle={'dark-content'}
+        translucent
+        backgroundColor="rgba(0,0,0,0)"
+      />
+      <ImageBackground source={dada} style={{height: 250, width: '100%'}}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowLeft color={colors.white()} variant="Linear" size={25} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Otot Dada</Text>
+        </View>
+      </ImageBackground>
+      <View style={styles.boxlist}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Mulai</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          <ItemOtotDada/>
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
+const ItemLatihanOtotLengan = () => {
+  const navigation = useNavigation();
+  return (
+    <View style={styles.Container}>
+      <StatusBar
+        barStyle={'dark-content'}
+        translucent
+        backgroundColor="rgba(0,0,0,0)"
+      />
+      <ImageBackground source={lengan} style={{height: 250, width: '100%'}}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowLeft color={colors.white()} variant="Linear" size={25} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Otot Lengan</Text>
+        </View>
+      </ImageBackground>
+      <View style={styles.boxlist}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Mulai</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          <ItemOtotLengan/>
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
+const ItemLatihanOtotBahudanPunggung = () => {
+  const navigation = useNavigation();
+  return (
+    <View style={styles.Container}>
+      <StatusBar
+        barStyle={'dark-content'}
+        translucent
+        backgroundColor="rgba(0,0,0,0)"
+      />
+      <ImageBackground source={bahudanpunggung} style={{height: 250, width: '100%'}}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowLeft color={colors.white()} variant="Linear" size={25} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Otot Bahu & Punggung</Text>
+        </View>
+      </ImageBackground>
+      <View style={styles.boxlist}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Mulai</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          <ItemOtotBahudanPunggung/>
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
+
+export {Latihan, ItemLatihanOtotPerut, ItemLatihanOtotDada, ItemLatihanOtotLengan, ItemLatihanOtotBahudanPunggung};
 
 const styles = StyleSheet.create({
   Container: {

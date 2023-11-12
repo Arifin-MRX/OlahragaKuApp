@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -17,12 +17,14 @@ import {
   Message,
   SearchNormal,
 } from 'iconsax-react-native';
-import {fontType, colors,img} from '../../theme';
+import {fontType, colors, img} from '../../theme';
 import FastImage from 'react-native-fast-image';
 import {Tantangan} from '../../components';
 import {TantanganList} from '../../../data';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Home() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.Headers}>
@@ -35,10 +37,12 @@ export default function Home() {
             <Text>Hallo, Selamat Datang 👋</Text>
             <Text style={styles.namaprofil}>Mohammad Harifin</Text>
           </View>
-          <Image
-            source={require('../../assets/img/34.jpg')}
-            style={{width: 40, height: 50, borderRadius: 20}}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Image
+              source={require('../../assets/img/34.jpg')}
+              style={{width: 40, height: 50, borderRadius: 20}}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.boxSearch}>
           <SearchNormal color={colors.black()} variant="Linear" size={20} />
@@ -46,12 +50,14 @@ export default function Home() {
         </View>
         <View style={styles.terbaru}>
           <Text style={styles.titleterbaru}>Tantangan</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Bookmark')}>
           <Text style={styles.lihatsemua}>Lihat Semua</Text>
+          </TouchableOpacity>
         </View>
         <ListTantangan />
         <View style={itemolaraga.textcontent}>
           <Text style={styles.titleterbaru}>Olahraga</Text>
-          <Text style={styles.lihatsemua}>Lihat Semua</Text>
+          {/* <Text style={styles.lihatsemua}>Lihat Semua</Text> */}
         </View>
         <ListOlahraga />
       </ScrollView>
@@ -60,7 +66,6 @@ export default function Home() {
 }
 
 const ListTantangan = () => {
-
   const horizontalData = TantanganList;
   return (
     <View>
@@ -74,42 +79,41 @@ const ListTantangan = () => {
 };
 
 const ListOlahraga = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView>
-      <View style={itemolaraga.carditem}>
-        <ImageBackground
-          style={itemolaraga.cardImage}
-          borderRadius={10}
-          source={require('../../assets/img/ototperut.jpg')}>
-          <View style={itemolaraga.cardcontent}>
-            <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
-            </View>
-            {/* <View>
-              <View style={itemolaraga.cardIcon}>
-                <Receipt21 color={colors.white()} variant="Linear" size={30} />
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ItemLatihanOtotPerut')}>
+        <View style={itemolaraga.carditem}>
+          <ImageBackground
+            style={itemolaraga.cardImage}
+            borderRadius={10}
+            source={require('../../assets/img/ototperut.jpg')}>
+            <View style={itemolaraga.cardcontent}>
+              <View style={itemolaraga.cardInfo}>
+                <Text style={itemolaraga.cardtitle}>Latihan Otot Perut</Text>
               </View>
-            </View> */}
-          </View>
-        </ImageBackground>
-      </View>
-      <View style={itemolaraga.carditem}>
-        <ImageBackground
-          style={itemolaraga.cardImage}
-          borderRadius={10}
-          source={require('../../assets/img/dada.jpg')}>
-          <View style={itemolaraga.cardcontent}>
-            <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot dada</Text>
             </View>
-            {/* <View>
-              <View style={itemolaraga.cardIcon}>
-                <Receipt21 color={colors.white()} variant="Linear" size={30} />
+          </ImageBackground>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ItemLatihanOtotDada')}>
+        <View style={itemolaraga.carditem}>
+          <ImageBackground
+            style={itemolaraga.cardImage}
+            borderRadius={10}
+            source={require('../../assets/img/dada.jpg')}>
+            <View style={itemolaraga.cardcontent}>
+              <View style={itemolaraga.cardInfo}>
+                <Text style={itemolaraga.cardtitle}>Latihan Otot dada</Text>
               </View>
-            </View> */}
-          </View>
-        </ImageBackground>
-      </View>
+            </View>
+          </ImageBackground>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ItemLatihanOtotLengan')}>
       <View style={itemolaraga.carditem}>
         <ImageBackground
           style={itemolaraga.cardImage}
@@ -119,14 +123,11 @@ const ListOlahraga = () => {
             <View style={itemolaraga.cardInfo}>
               <Text style={itemolaraga.cardtitle}>Latihan Otot lengan</Text>
             </View>
-            {/* <View>
-              <View style={itemolaraga.cardIcon}>
-                <Receipt21 color={colors.white()} variant="Linear" size={30} />
-              </View>
-            </View> */}
           </View>
         </ImageBackground>
       </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('ItemLatihanOtotBahudanPunggung')}>
       <View style={itemolaraga.carditem}>
         <ImageBackground
           style={itemolaraga.cardImage}
@@ -138,14 +139,10 @@ const ListOlahraga = () => {
                 Latihan Otot bahu & penggung
               </Text>
             </View>
-            {/* <View>
-              <View style={itemolaraga.cardIcon}>
-                <Receipt21 color={colors.white()} variant="Linear" size={30} />
-              </View>
-            </View> */}
           </View>
         </ImageBackground>
       </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
