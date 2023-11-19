@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect,useState} from 'react';
+import {Animated} from 'react-native';
 import {
   ScrollView,
   StyleSheet,
@@ -6,17 +7,10 @@ import {
   View,
   Image,
   ImageBackground,
-  TextBase,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {
-  Notification,
-  Receipt21,
-  Clock,
-  Message,
-  SearchNormal,
-} from 'iconsax-react-native';
+import {Notification, SearchNormal} from 'iconsax-react-native';
 import {fontType, colors, img} from '../../theme';
 import FastImage from 'react-native-fast-image';
 import {Tantangan} from '../../components';
@@ -25,22 +19,35 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function Home() {
   const navigation = useNavigation();
+  const [fadeAnim] = useState(new Animated.Value(0));
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000, // Durasi animasi dalam milidetik
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
   return (
-    <View style={styles.container}>
+    <Animated.View style={{...styles.container, opacity: fadeAnim}}>
       <View style={styles.Headers}>
         <Text style={styles.title}>OlahragaKu</Text>
         <Notification color={colors.black()} varian="linear" size={25} />
       </View>
       <ScrollView>
         <View style={styles.conten}>
-          <View>
+          <Animated.View style={{opacity: fadeAnim}}>
             <Text>Hallo, Selamat Datang 👋</Text>
             <Text style={styles.namaprofil}>Mohammad Harifin</Text>
-          </View>
+          </Animated.View>
           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Image
+            <Animated.Image
               source={require('../../assets/img/34.jpg')}
-              style={{width: 40, height: 50, borderRadius: 20}}
+              style={{
+                width: 40,
+                height: 50,
+                borderRadius: 20,
+                opacity: fadeAnim,
+              }}
             />
           </TouchableOpacity>
         </View>
@@ -51,7 +58,7 @@ export default function Home() {
         <View style={styles.terbaru}>
           <Text style={styles.titleterbaru}>Tantangan</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Bookmark')}>
-          <Text style={styles.lihatsemua}>Lihat Semua</Text>
+            <Text style={styles.lihatsemua}>Lihat Semua</Text>
           </TouchableOpacity>
         </View>
         <ListTantangan />
@@ -61,7 +68,7 @@ export default function Home() {
         </View>
         <ListOlahraga />
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -114,34 +121,35 @@ const ListOlahraga = () => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('ItemLatihanOtotLengan')}>
-      <View style={itemolaraga.carditem}>
-        <ImageBackground
-          style={itemolaraga.cardImage}
-          borderRadius={10}
-          source={require('../../assets/img/lengan.jpg')}>
-          <View style={itemolaraga.cardcontent}>
-            <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>Latihan Otot lengan</Text>
+        <View style={itemolaraga.carditem}>
+          <ImageBackground
+            style={itemolaraga.cardImage}
+            borderRadius={10}
+            source={require('../../assets/img/lengan.jpg')}>
+            <View style={itemolaraga.cardcontent}>
+              <View style={itemolaraga.cardInfo}>
+                <Text style={itemolaraga.cardtitle}>Latihan Otot lengan</Text>
+              </View>
             </View>
-          </View>
-        </ImageBackground>
-      </View>
+          </ImageBackground>
+        </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('ItemLatihanOtotBahudanPunggung')}>
-      <View style={itemolaraga.carditem}>
-        <ImageBackground
-          style={itemolaraga.cardImage}
-          borderRadius={10}
-          source={require('../../assets/img/bahudanpunggung.jpg')}>
-          <View style={itemolaraga.cardcontent}>
-            <View style={itemolaraga.cardInfo}>
-              <Text style={itemolaraga.cardtitle}>
-                Latihan Otot bahu & penggung
-              </Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ItemLatihanOtotBahudanPunggung')}>
+        <View style={itemolaraga.carditem}>
+          <ImageBackground
+            style={itemolaraga.cardImage}
+            borderRadius={10}
+            source={require('../../assets/img/bahudanpunggung.jpg')}>
+            <View style={itemolaraga.cardcontent}>
+              <View style={itemolaraga.cardInfo}>
+                <Text style={itemolaraga.cardtitle}>
+                  Latihan Otot bahu & penggung
+                </Text>
+              </View>
             </View>
-          </View>
-        </ImageBackground>
-      </View>
+          </ImageBackground>
+        </View>
       </TouchableOpacity>
     </ScrollView>
   );
