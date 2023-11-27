@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated} from 'react-native';
 import {
   ScrollView,
@@ -51,10 +51,12 @@ export default function Home() {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.boxSearch}>
-          <SearchNormal color={colors.black()} variant="Linear" size={20} />
-          <TextInput size={14} placeholder="search" color={colors.black()} />
-        </View>
+        <TouchableOpacity >
+          <View style={styles.boxSearch}>
+            <SearchNormal color={colors.black()} variant="Linear" size={20} />
+            <TextInput size={14} placeholder="search" color={colors.black()} />
+          </View>
+        </TouchableOpacity>
         <View style={styles.terbaru}>
           <Text style={styles.titleterbaru}>Tantangan</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Bookmark')}>

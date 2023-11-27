@@ -1,9 +1,23 @@
-import React from "react";
-import { createStackNavigator, TransitionPresets } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Profile, Bookmark,ItemLatihanOtotPerut,ItemLatihanOtotDada, ItemLatihanOtotLengan, ItemLatihanOtotBahudanPunggung } from "../screens";
-import {Home2, LocationDiscover, Receipt21, ProfileCircle} from 'iconsax-react-native'; 
-import { fontType, colors } from '../theme';
+import React from 'react';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  Home,
+  Profile,
+  Bookmark,
+  ItemLatihanOtotPerut,
+  ItemLatihanOtotDada,
+  ItemLatihanOtotLengan,
+  ItemLatihanOtotBahudanPunggung,
+  AddTantangan,
+} from '../screens';
+import {
+  Home2,
+  LocationDiscover,
+  Receipt21,
+  ProfileCircle,
+} from 'iconsax-react-native';
+import {fontType, colors} from '../theme';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 function MainApp() {
@@ -84,23 +98,23 @@ const Router = () => {
         name="ItemLatihanOtotPerut"
         component={ItemLatihanOtotPerut}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="ItemLatihanOtotDada"
         component={ItemLatihanOtotDada}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -108,11 +122,11 @@ const Router = () => {
         name="ItemLatihanOtotBahudanPunggung"
         component={ItemLatihanOtotBahudanPunggung}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -120,17 +134,28 @@ const Router = () => {
         name="ItemLatihanOtotLengan"
         component={ItemLatihanOtotLengan}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
+      <Stack.Screen
+        name="AddTantangan"
+        component={AddTantangan}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+     
     </Stack.Navigator>
   );
 };
 export default Router;
-
-

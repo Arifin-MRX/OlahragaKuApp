@@ -1,22 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { colors, fontType } from '../../theme';
-import { ProfileData } from '../../../data';
-import { Logout,GalleryEdit } from 'iconsax-react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {colors, fontType} from '../../theme';
+import {ProfileData} from '../../../data';
+import {Logout, GalleryEdit} from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Profile() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.containerProfil}>
         <View style={styles.lingkaran}>
           <Image source={ProfileData.image} style={styles.profileImage} />
-          <GalleryEdit style={styles.iconGaleri} color={colors.black()} variant={'Bold'} size={20} />
+          <GalleryEdit
+            style={styles.iconGaleri}
+            color={colors.black()}
+            variant={'Bold'}
+            size={20}
+          />
         </View>
         <Text style={styles.name}>{ProfileData.name}</Text>
         <Text style={styles.email}>{ProfileData.email}</Text>
       </View>
       <TouchableOpacity style={styles.editButton}>
         <Text style={styles.editButtonText}>Edit Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('AddTantangan')}>
+        <View style={styles.editButton}>
+          <Text style={styles.editButtonText}>Tambah Tantangan</Text>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton}>
         <Logout color={colors.white()} variant={'Bold'} size={20} />
@@ -72,6 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 20,
+    marginBottom: 10,
   },
   editButtonText: {
     color: 'blue',
