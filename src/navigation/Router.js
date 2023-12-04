@@ -10,6 +10,8 @@ import {
   ItemLatihanOtotLengan,
   ItemLatihanOtotBahudanPunggung,
   AddTantangan,
+  DetailTantangan,
+  EditTantangan
 } from '../screens';
 import {
   Home2,
@@ -154,7 +156,30 @@ const Router = () => {
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
-     
+     <Stack.Screen
+        name="DetailTantangan"
+        component={DetailTantangan}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="EditTantangan"
+        component={EditTantangan}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
     </Stack.Navigator>
   );
 };

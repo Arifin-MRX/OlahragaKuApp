@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useCallback} from 'react';
 import {Animated} from 'react-native';
 import {
   ScrollView,
@@ -8,16 +8,45 @@ import {
   Image,
   ImageBackground,
   TextInput,
+  FlatList,
   TouchableOpacity,
+  ActivityIndicator, RefreshControl
 } from 'react-native';
 import {Notification, SearchNormal} from 'iconsax-react-native';
-import {fontType, colors, img} from '../../theme';
-import FastImage from 'react-native-fast-image';
-import {Tantangan} from '../../components';
-import {TantanganList} from '../../../data';
-import {useNavigation} from '@react-navigation/native';
+import {fontType, colors, img} from '../../theme';;
+import axios from 'axios';
+import {useNavigation,useFocusEffect} from '@react-navigation/native';
+import ItemTantangan from '../../components/Tantangan';
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [blogData, setBlogData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const getDataBlog = async () => {
+    try {
+      const response = await axios.get(
+        'https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga',
+      );
+      setBlogData(response.data);
+      setLoading(false)
+    } catch (error) {
+        console.error(error);
+    }
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      getDataBlog()
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDataBlog();
+    }, [])
+  );
   const navigation = useNavigation();
   const [fadeAnim] = useState(new Animated.Value(0));
   useEffect(() => {
@@ -33,7 +62,9 @@ export default function Home() {
         <Text style={styles.title}>OlahragaKu</Text>
         <Notification color={colors.black()} varian="linear" size={25} />
       </View>
-      <ScrollView>
+      <ScrollView  showsVerticalScrollIndicator={false}  refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.conten}>
           <Animated.View style={{opacity: fadeAnim}}>
             <Text>Hallo, Selamat Datang 👋</Text>
@@ -63,10 +94,11 @@ export default function Home() {
             <Text style={styles.lihatsemua}>Lihat Semua</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.cardTantangan}>
         <ListTantangan />
+        </View>
         <View style={itemolaraga.textcontent}>
           <Text style={styles.titleterbaru}>Olahraga</Text>
-          {/* <Text style={styles.lihatsemua}>Lihat Semua</Text> */}
         </View>
         <ListOlahraga />
       </ScrollView>
@@ -75,22 +107,38 @@ export default function Home() {
 }
 
 const ListTantangan = () => {
-  const horizontalData = TantanganList;
+  const [blogData, setBlogData] = useState([]);
+  const getDataBlog = async () => {
+    try {
+      const response = await axios.get(
+        'https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga',
+      );
+      setBlogData(response.data);
+    } catch (error) {
+        console.error(error);
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      getDataBlog();
+    }, [])
+  );
   return (
-    <View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.itemtantangan}>
-          <Tantangan data={horizontalData} />
-        </View>
-      </ScrollView>
-    </View>
+    <FlatList
+    data={blogData}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.itemtantangan}
+    renderItem={({ item, index }) => <ItemTantangan item={item} key={index} />}
+    keyExtractor={(item) => item.id.toString()}
+  />
   );
 };
 
 const ListOlahraga = () => {
   const navigation = useNavigation();
   return (
-    <ScrollView>
+    <View>
       <TouchableOpacity
         onPress={() => navigation.navigate('ItemLatihanOtotPerut')}>
         <View style={itemolaraga.carditem}>
@@ -153,7 +201,7 @@ const ListOlahraga = () => {
           </ImageBackground>
         </View>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -254,10 +302,17 @@ const styles = StyleSheet.create({
   itemtantangan: {
     paddingVertical: 10,
     gap: 10,
+    flexDirection: 'row',
   },
   listCard: {
     paddingHorizontal: 24,
     paddingVertical: 10,
     gap: 15,
+  },
+  cardTantangan: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
