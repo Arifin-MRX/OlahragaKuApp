@@ -22,7 +22,8 @@ import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../../theme';
 import {formatDate} from '../../utils/formatDate';
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import ActionSheet from 'react-native-actions-sheet';
 
 const DetailTantangan = ({route}) => {
@@ -44,38 +45,65 @@ const DetailTantangan = ({route}) => {
     actionSheetRef.current?.hide();
   };
 
+  // useEffect(() => {
+  //   getBlogById();
+  // }, [blogId]);
+
   useEffect(() => {
-    getBlogById();
+    const subscriber = firestore()
+      .collection('tantangan')
+      .doc(blogId)
+      .onSnapshot(documentSnapshot => {
+        const blogData = documentSnapshot.data();
+        if (blogData) {
+          console.log('Blog data: ', blogData);
+          setSelectedBlog(blogData);
+        } else {
+          console.log(`Blog with ID ${blogId} not found.`);
+        }
+      });
+    setLoading(false);
+    return () => subscriber();
   }, [blogId]);
 
-  const getBlogById = async () => {
-    try {
-      const response = await axios.get(
-        `https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga/${blogId}`,
-      );
-      setSelectedBlog(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getBlogById = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga/${blogId}`,
+  //     );
+  //     setSelectedBlog(response.data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const navigateEdit = () => {
     closeActionSheet();
     navigation.navigate('EditTantangan', {blogId});
   };
   const handleDelete = async () => {
-    await axios
-      .delete(
-        `https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga/${blogId}`,
-      )
-      .then(() => {
-        closeActionSheet();
-        navigation.navigate('Profile');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    setLoading(true);
+    try {
+      await firestore()
+        .collection('tantangan')
+        .doc(blogId)
+        .delete()
+        .then(() => {
+          console.log('Tantangan berhasil dihapus!');
+        });
+      if (selectedBlog?.image) {
+        const imageRef = storage().refFromURL(selectedBlog?.image);
+        await imageRef.delete();
+      }
+      console.log('Tantangan berhasil dihapus!');
+      closeActionSheet();
+      setSelectedBlog(null);
+      setLoading(false)
+      navigation.navigate('Profile');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const navigation = useNavigation();
@@ -137,37 +165,9 @@ const DetailTantangan = ({route}) => {
       </View>
     );
   };
-  const defaultimage =
-    'https://img.myloview.com/stickers/white-laptop-screen-with-hd-video-technology-icon-isolated-on-grey-background-abstract-circle-random-dots-vector-illustration-400-176057922.jpg';
-// Mendefinisikan fungsi untuk mendapatkan URI gambar yang telah diverifikasi
-const getImageUri = (url) => {
-  // Menentukan ekstensi gambar yang diizinkan (misal: jpg, jpeg, png)
-  const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-  // Mengecek apakah URL gambar didefinisikan
-  if (!url) {
-    // Mengembalikan URL gambar default jika URL tidak didefinisikan
-    return defaultimage;
-  }
-
-  // Mendapatkan ekstensi file dari URL
-  const ext = url.split('.').pop().toLowerCase();
-
-  // Mengecek apakah ekstensi gambar diizinkan
-  if (allowedExtensions.includes(ext)) {
-    return url;
-  } else {
-    // Mengembalikan URL gambar default jika ekstensi tidak diizinkan
-    return defaultimage;
-  }
-};
-
-// Mendapatkan URI gambar yang telah diverifikasi
-const imageUri = getImageUri(selectedBlog?.image);
-
-// Menentukan sumber gambar dengan URI yang telah diverifikasi
 const imageSource = {
-  uri: imageUri,
+  uri: selectedBlog?.image,
   headers: { Authorization: 'someAuthToken' },
   priority: FastImage.priority.high,
 };

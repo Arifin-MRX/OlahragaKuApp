@@ -1,4 +1,4 @@
-import React , { useState, useCallback}from 'react';
+import React , {useEffect, useState, useCallback}from 'react';
 import {
   View,
   Text,
@@ -11,40 +11,50 @@ import {
 import {colors, fontType} from '../../theme';
 import {ProfileData} from '../../../data';
 import {Logout, GalleryEdit} from 'iconsax-react-native';
-import {useNavigation,useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 import ItemTantangan from '../../components/ItemTantangan';
+import firestore from '@react-native-firebase/firestore';
 
 export default function Profile() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataBlog = async () => {
-    try {
-      const response = await axios.get(
-        'https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga',
-      );
-      setBlogData(response.data);
-      setLoading(false)
-    } catch (error) {
-        console.error(error);
-    }
-  };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('tantangan')
+      .onSnapshot(querySnapshot => {
+        const blogs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          blogs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(blogs);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataBlog()
+      firestore()
+        .collection('tantangan')
+        .onSnapshot(querySnapshot => {
+          const blogs = [];
+          querySnapshot.forEach(documentSnapshot => {
+            blogs.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setBlogData(blogs);
+        });
       setRefreshing(false);
     }, 1500);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, [])
-  );
   return (
     <View style={styles.container}>
       <ScrollView

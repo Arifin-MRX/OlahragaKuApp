@@ -15,37 +15,10 @@ import {formatDate} from '../utils/formatDate';
 
 const ItemTantangan = ({item}) => {
   const navigation = useNavigation();
-  const defaultimage =
-    'https://img.myloview.com/stickers/white-laptop-screen-with-hd-video-technology-icon-isolated-on-grey-background-abstract-circle-random-dots-vector-illustration-400-176057922.jpg';
-  // Mendefinisikan fungsi untuk mendapatkan URI gambar yang telah diverifikasi
-  const getImageUri = url => {
-    // Menentukan ekstensi gambar yang diizinkan (misal: jpg, jpeg, png)
-    const allowedExtensions = ['jpg', 'jpeg', 'png'];
-
-    // Mengecek apakah URL gambar didefinisikan
-    if (!url) {
-      // Mengembalikan URL gambar default jika URL tidak didefinisikan
-      return defaultimage;
-    }
-
-    // Mendapatkan ekstensi file dari URL
-    const ext = url.split('.').pop().toLowerCase();
-
-    // Mengecek apakah ekstensi gambar diizinkan
-    if (allowedExtensions.includes(ext)) {
-      return url;
-    } else {
-      // Mengembalikan URL gambar default jika ekstensi tidak diizinkan
-      return defaultimage;
-    }
-  };
-
-  // Mendapatkan URI gambar yang telah diverifikasi
-  const imageUri = getImageUri(item.image);
 
   // Menentukan sumber gambar dengan URI yang telah diverifikasi
   const imageSource = {
-    uri: imageUri,
+    uri: item?.image,
     headers: {Authorization: 'someAuthToken'},
     priority: FastImage.priority.high,
   };

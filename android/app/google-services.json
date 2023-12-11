@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "866500653651",
+    "project_id": "olahragakuapp",
+    "storage_bucket": "olahragakuapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866500653651:android:f44bbfd4674f9cc1504ca6",
+        "android_client_info": {
+          "package_name": "com.olahragaku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxiaQiCP6Mnv_4H86q-bWP4cdovQiaqms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

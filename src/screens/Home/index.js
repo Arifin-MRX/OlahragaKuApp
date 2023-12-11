@@ -14,40 +14,50 @@ import {
 } from 'react-native';
 import {Notification, SearchNormal} from 'iconsax-react-native';
 import {fontType, colors, img} from '../../theme';;
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 import {useNavigation,useFocusEffect} from '@react-navigation/native';
 import ItemTantangan from '../../components/Tantangan';
 
 export default function Home() {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataBlog = async () => {
-    try {
-      const response = await axios.get(
-        'https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga',
-      );
-      setBlogData(response.data);
-      setLoading(false)
-    } catch (error) {
-        console.error(error);
-    }
-  };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('tantangan')
+      .onSnapshot(querySnapshot => {
+        const blogs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          blogs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(blogs);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataBlog()
+      firestore()
+        .collection('tantangan')
+        .onSnapshot(querySnapshot => {
+          const blogs = [];
+          querySnapshot.forEach(documentSnapshot => {
+            blogs.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setBlogData(blogs);
+        });
       setRefreshing(false);
     }, 1500);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, [])
-  );
-  const navigation = useNavigation();
   const [fadeAnim] = useState(new Animated.Value(0));
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -108,21 +118,23 @@ export default function Home() {
 
 const ListTantangan = () => {
   const [blogData, setBlogData] = useState([]);
-  const getDataBlog = async () => {
-    try {
-      const response = await axios.get(
-        'https://6569ec96de53105b0dd7e0b9.mockapi.io/olahragakuapp/olahraga',
-      );
-      setBlogData(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-  };
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, [])
-  );
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('tantangan')
+      .onSnapshot(querySnapshot => {
+        const blogs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          blogs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(blogs);
+      });
+    return () => subscriber();
+  }, []);
+
+
   return (
     <FlatList
     data={blogData}
