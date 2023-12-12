@@ -25,9 +25,11 @@ import {formatDate} from '../../utils/formatDate';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import ActionSheet from 'react-native-actions-sheet';
+import auth from '@react-native-firebase/auth';
 
 const DetailTantangan = ({route}) => {
   const {blogId} = route.params;
+  const userId = auth().currentUser.uid;
   const [iconStates, setIconStates] = useState({
     liked: {variant: 'Linear', color: colors.grey(0.6)},
     bookmarked: {variant: 'Linear', color: colors.grey(0.6)},

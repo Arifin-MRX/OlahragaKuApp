@@ -8,18 +8,22 @@ import {formatDate} from '../utils/formatDate';
 
 const ItemTantangan = ({item}) => {
   const navigation = useNavigation();
-  const imageSource = {
-    uri: item?.image,
-    headers: {Authorization: 'someAuthToken'},
-    priority: FastImage.priority.high,
-  };
+  // const imageSource = {
+  //   uri: item?.image,
+  //   headers: {Authorization: 'someAuthToken'},
+  //   priority: FastImage.priority.high,
+  // };
   return (
     <TouchableOpacity
       style={styles.cardItem}
       onPress={() => navigation.navigate('DetailTantangan', {blogId: item.id})}>
-      <FastImage
+     <FastImage
         style={styles.cardImage}
-        source={imageSource}
+        source={{
+          uri: item?.image,
+          headers: {Authorization: 'someAuthToken'},
+          priority: FastImage.priority.high,
+        }}
         resizeMode={FastImage.resizeMode.cover}
       />
       <View style={styles.cardContent}>
@@ -37,7 +41,6 @@ const ItemTantangan = ({item}) => {
           <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
           <Text style={styles.cardText}>{formatDate(item?.createdAt)}</Text>
           <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-          {/* <Text style={styles.cardText}>{item?.totalComments}</Text> */}
         </View>
       </View>
     </TouchableOpacity>

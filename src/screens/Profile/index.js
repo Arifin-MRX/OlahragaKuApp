@@ -1,4 +1,4 @@
-import React , {useEffect, useState, useCallback}from 'react';
+import React , {useEffect, useState, useCallback, useRef}from 'react';
 import {
   View,
   Text,
@@ -14,27 +14,75 @@ import {Logout, GalleryEdit} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import ItemTantangan from '../../components/ItemTantangan';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import FastImage from 'react-native-fast-image';
+ import {formatDate} from '../../utils/formatDate';
+ import ActionSheet from 'react-native-actions-sheet';
 
 export default function Profile() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const actionSheetRef = useRef(null);
+
+  const closeActionSheet = () => {
+    actionSheetRef.current?.hide();
+  };
   useEffect(() => {
-    const subscriber = firestore()
-      .collection('tantangan')
-      .onSnapshot(querySnapshot => {
-        const blogs = [];
-        querySnapshot.forEach(documentSnapshot => {
-          blogs.push({
-            ...documentSnapshot.data(),
-            id: documentSnapshot.id,
+    const user = auth().currentUser;
+    const fetchBlogData = () => {
+      try {
+        if (user) {
+          const userId = user.uid;
+          const blogCollection = firestore().collection('tantangan');
+          const query = blogCollection.where('authorId', '==', userId);
+          const unsubscribeBlog = query.onSnapshot(querySnapshot => {
+            const blogs = querySnapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setBlogData(blogs);
+            setLoading(false);
           });
-        });
-        setBlogData(blogs);
-        setLoading(false);
-      });
-    return () => subscriber();
+
+          return () => {
+            unsubscribeBlog();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      }
+    };
+    const fetchProfileData = () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userId = user.uid;
+          const userRef = firestore().collection('users').doc(userId);
+
+          const unsubscribeProfile = userRef.onSnapshot(doc => {
+            if (doc.exists) {
+              const userData = doc.data();
+              setProfileData(userData);
+              fetchBlogData();
+            } else {
+              console.error('Dokumen pengguna tidak ditemukan.');
+            }
+          });
+
+          return () => {
+            unsubscribeProfile();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+    fetchBlogData();
+    fetchProfileData();
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -55,6 +103,16 @@ export default function Profile() {
       setRefreshing(false);
     }, 1500);
   }, []);
+  const handleLogout = async () => {
+    try {
+      closeActionSheet();
+      await auth().signOut();
+      await AsyncStorage.removeItem('userData');
+      navigation.replace('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <View style={styles.container}>
       <ScrollView
@@ -68,7 +126,16 @@ export default function Profile() {
         }>
         <View style={styles.containerProfil}>
           <View style={styles.lingkaran}>
-            <Image source={ProfileData.image} style={styles.profileImage} />
+            {/* <Image source={ProfileData.image} style={styles.profileImage} /> */}
+            <FastImage
+            style={styles.profileImage}
+            source={{
+              uri: profileData?.photoUrl,
+              headers: {Authorization: 'someAuthToken'},
+              priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+          />
             <GalleryEdit
               style={styles.iconGaleri}
               color={colors.black()}
@@ -76,8 +143,8 @@ export default function Profile() {
               size={20}
             />
           </View>
-          <Text style={styles.name}>{ProfileData.name}</Text>
-          <Text style={styles.email}>{ProfileData.email}</Text>
+          <Text style={styles.name}>{profileData?.fullName}</Text>
+          <Text style={styles.email}>{profileData?.email}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
           <Text style={styles.editButtonText}>Edit Profile</Text>
@@ -95,7 +162,7 @@ export default function Profile() {
           )}
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Logout color={colors.white()} variant={'Bold'} size={20} />
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>

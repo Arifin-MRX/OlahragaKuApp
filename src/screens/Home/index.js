@@ -1,4 +1,4 @@
-import React, {useEffect, useState,useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {Animated} from 'react-native';
 import {
   ScrollView,
@@ -10,35 +10,102 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator, RefreshControl
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {Notification, SearchNormal} from 'iconsax-react-native';
-import {fontType, colors, img} from '../../theme';;
+import FastImage from 'react-native-fast-image';
+import {fontType, colors, img} from '../../theme';
 import firestore from '@react-native-firebase/firestore';
-import {useNavigation,useFocusEffect} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import ItemTantangan from '../../components/Tantangan';
+import auth from '@react-native-firebase/auth';
 
 export default function Home() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [profileData, setProfileData] = useState(null);
   useEffect(() => {
-    const subscriber = firestore()
-      .collection('tantangan')
-      .onSnapshot(querySnapshot => {
-        const blogs = [];
-        querySnapshot.forEach(documentSnapshot => {
-          blogs.push({
-            ...documentSnapshot.data(),
-            id: documentSnapshot.id,
+    const user = auth().currentUser;
+    const fetchBlogData = () => {
+      try {
+        if (user) {
+          const userId = user.uid;
+          const blogCollection = firestore().collection('tantangan');
+          const query = blogCollection.where('authorId', '==', userId);
+          const unsubscribeBlog = query.onSnapshot(querySnapshot => {
+            const blogs = querySnapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setBlogData(blogs);
+            setLoading(false);
           });
-        });
-        setBlogData(blogs);
-        setLoading(false);
-      });
-    return () => subscriber();
+
+          return () => {
+            unsubscribeBlog();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      }
+    };
+    const fetchProfileData = () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userId = user.uid;
+          const userRef = firestore().collection('users').doc(userId);
+
+          const unsubscribeProfile = userRef.onSnapshot(doc => {
+            if (doc.exists) {
+              const userData = doc.data();
+              setProfileData(userData);
+              fetchBlogData();
+            } else {
+              console.error('Dokumen pengguna tidak ditemukan.');
+            }
+          });
+
+          return () => {
+            unsubscribeProfile();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+    fetchBlogData();
+    fetchProfileData();
   }, []);
+  // useEffect(() => {
+  //   const fetchBlogData = () => {
+  //     try {
+  //       const blogCollection = firestore().collection('tantangan');
+  //       const unsubscribeBlog = blogCollection.onSnapshot(querySnapshot => {
+  //         const blogs = querySnapshot.docs.map(doc => ({
+  //           ...doc.data(),
+  //           id: doc.id,
+  //         }));
+  //         setBlogData(blogs);
+  //         setLoading(false);
+  //       });
+
+  //       return () => {
+  //         unsubscribeBlog();
+  //       };
+  //     } catch (error) {
+  //       console.error('Error fetching blog data:', error);
+  //     }
+  //   };
+  //   fetchBlogData();
+  // }, []);
+  
+
+  const horizontalData = blogData.slice(0,5);
+  const verticalData = blogData.slice(5);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -72,16 +139,18 @@ export default function Home() {
         <Text style={styles.title}>OlahragaKu</Text>
         <Notification color={colors.black()} varian="linear" size={25} />
       </View>
-      <ScrollView  showsVerticalScrollIndicator={false}  refreshControl={
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <View style={styles.conten}>
           <Animated.View style={{opacity: fadeAnim}}>
             <Text>Hallo, Selamat Datang 👋</Text>
-            <Text style={styles.namaprofil}>Mohammad Harifin</Text>
+            <Text style={styles.namaprofil}>{profileData?.fullName}</Text>
           </Animated.View>
           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Animated.Image
+            {/* <Animated.Image
               source={require('../../assets/img/34.jpg')}
               style={{
                 width: 40,
@@ -89,10 +158,24 @@ export default function Home() {
                 borderRadius: 20,
                 opacity: fadeAnim,
               }}
+            /> */}
+            <FastImage
+              style={{
+                width: 40,
+                height: 50,
+                borderRadius: 20,
+                // opacity: fadeAnim,
+              }}
+              source={{
+                uri: profileData?.photoUrl,
+                headers: {Authorization: 'someAuthToken'},
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity >
+        <TouchableOpacity>
           <View style={styles.boxSearch}>
             <SearchNormal color={colors.black()} variant="Linear" size={20} />
             <TextInput size={14} placeholder="search" color={colors.black()} />
@@ -105,7 +188,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
         <View style={styles.cardTantangan}>
-        <ListTantangan />
+          <ListTantangan />
         </View>
         <View style={itemolaraga.textcontent}>
           <Text style={styles.titleterbaru}>Olahraga</Text>
@@ -134,16 +217,15 @@ const ListTantangan = () => {
     return () => subscriber();
   }, []);
 
-
   return (
     <FlatList
-    data={blogData}
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={styles.itemtantangan}
-    renderItem={({ item, index }) => <ItemTantangan item={item} key={index} />}
-    keyExtractor={(item) => item.id.toString()}
-  />
+      data={blogData}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.itemtantangan}
+      renderItem={({item, index}) => <ItemTantangan item={item} key={index} />}
+      keyExtractor={item => item.id.toString()}
+    />
   );
 };
 
